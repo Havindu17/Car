@@ -8,7 +8,13 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "*", // Render එකේ දෙන FRONTEND_URL එකට අවසර දීම
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -19,15 +25,16 @@ app.use("/api/items", itemRoutes);
 
 const PORT = process.env.PORT || 5000;
 
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("MongoDB connected");
+    console.log("✅ MongoDB connected successfully"); 
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   })
   .catch((error) => {
-    console.error("Database connection error:", error.message);
+    console.error("❌ Database connection error:", error.message);
     process.exit(1);
   });
